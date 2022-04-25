@@ -17,4 +17,5 @@ root.geometry("800x600")
 linkLabel.pack(pady=10, side=TOP)
 linkEntry.pack()
 sub_btn.pack(pady=15)
+
 root.mainloop()
