@@ -47,7 +47,7 @@ class MainWindow(QWidget):
             self.save_dialog.setOption(QFileDialog.Option.ShowDirsOnly)
             self.save_dialog.exec()
             save_directory = self.save_dialog.selectedFiles()[0]
-            stockage.save_video(output_directory, save_directory)
+            stockage.save_video(output_directory[0], save_directory, output_directory[1])
         except:
             # Si une erreur survient, on affiche un message d'erreur
             self.error_dialog = QErrorMessage(self)

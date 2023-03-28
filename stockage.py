@@ -1,12 +1,10 @@
 import os
 
 
-def save_video(video_name, save_directory):
-    # Récupération du nom du fichier à partir du chemin d'accès
-    video_file_name = os.path.basename(video_name)
+def save_video(video_name, save_directory, video_title):
 
     # Création du chemin d'accès complet du fichier de sortie
-    output_file_path = os.path.join(save_directory, video_file_name)
+    output_file_path = os.path.join(save_directory, f'{video_title}.mp4')
 
     # Vérification si le fichier de sortie existe déjà
     if os.path.exists(output_file_path):
