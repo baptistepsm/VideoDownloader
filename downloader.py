@@ -1,39 +1,45 @@
-from tkinter.filedialog import asksaveasfile
-from pytube import YouTube
-from tkinter import *
+import yt_dlp as youtube_dl
 
-def mp4():
-    final_url = link.get()
-    yt = YouTube(final_url).streams.filter(progressive=True, file_extension='mp4')
-    yt.order_by('resolution').desc().first().download()
-    f = asksaveasfile(initialfile=yt, mode='w', defaultextension=".mp4")
 
-def mp3():
-    final_url = link.get()
-    yt = YouTube(final_url).streams.filter(only_audio=True).order_by('abr').desc().first().download()
-    f = asksaveasfile(initialfile=yt, mode='w', defaultextension=".mp3")
+# Fonction de téléchargement de vidéo
+def download_video(url, resolution):
+    # Récupération du titre de la vidéo
+    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(title)s.%(ext)s'})
+    with ydl:
+        result = ydl.extract_info(url, download=False)
+    title = result['title']
 
-root = Tk()
-root.title("Youtube Downloader")
-linkLabel = Label(root, text="Entrez le lien : ")
-link = StringVar()
-linkEntry = Entry(root, textvariable=link, width=100)
-sub_btn = Button(root, text='MP4', command=mp4)
-sub_btn2 = Button(root, text='MP3', command=mp3)
-# if link.get() != "":
-#     url = link.get()
-#     videoTitle = YouTube(url).title
-#     videoCover = YouTube(url).thumbnail_url
-#     response = requests.get(videoCover)
-#     img = Image.open(BytesIO(response.content))
-#     videoTitle = Label(root, text=videoTitle)
+    # Récupération de la résolution demandée
+    if resolution == '360p':
+        ydl_opts = {
+            'format': 'bestvideo[height<=360]+bestaudio/best[height<=360]',
+            'outtmpl': f'{title}.mp4'
+        }
+    elif resolution == '480p':
+        ydl_opts = {
+            'format': 'bestvideo[height<=480]+bestaudio/best[height<=480]',
+            'outtmpl': f'{title}.mp4'
+        }
+    elif resolution == '720p':
+        ydl_opts = {
+            'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]',
+            'outtmpl': f'{title}.mp4'
+        }
+    elif resolution == '1080p':
+        ydl_opts = {
+            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]',
+            'outtmpl': f'{title}.mp4'
+        }
+    elif resolution == 'mp3_Audio':
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': f'{title}.mp3'
+        }
+    else:
+        raise ValueError('Résolution non supportée.')
 
-root.geometry("800x600")
-linkLabel.pack(pady=10, side=TOP)
-linkEntry.pack()
-sub_btn.pack(pady=15)
-sub_btn2.pack(pady=15)
-# videoTitle.pack(pady=17)
-# img.thumbnail((200, 200), Image.ANTIALIAS)
+    # Téléchargement de la vidéo
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
 
-root.mainloop()
+    return f'{title}.mp4'
